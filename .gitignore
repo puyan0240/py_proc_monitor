@@ -1,0 +1,7 @@
+venv/
+*.bak
+*.mp3
+*.wav
+build/
+dist/
+*.spec
