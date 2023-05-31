@@ -1,6 +1,28 @@
 import tkinter
-from tkinter import ttk
+from tkinter import ttk, messagebox
+import time
+import threading  #スレッド
 import psutil
+
+max_count = (60 * 60)
+
+def monitor_task():
+
+    count = 0
+
+    while True:
+
+        count += 1
+        if count >= max_count:
+            count = 0
+
+        min = count / 60
+        sec = count % 60
+        timer_str = "%02d:%02d"%(min, sec)
+        label_top["text"] = timer_str
+
+        time.sleep(1)  # 1s
+
 
 
 if __name__ == '__main__':
@@ -34,6 +56,11 @@ if __name__ == '__main__':
     str = "%02d:%02d %02d"%(hour,min,sec)
     label_top['text'] = str
 
+
+    #タスク起動
+    task_id = threading.Thread(target=monitor_task)
+    task_id.daemon = True  #デーモン
+    task_id.start()
 
     root.mainloop()
 
