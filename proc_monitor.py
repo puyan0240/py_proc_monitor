@@ -2,9 +2,11 @@ import tkinter
 from tkinter import ttk, messagebox
 import time
 import threading  #スレッド
-import psutil
+import psutil  #プロセス取得
 
 max_count = (60 * 60)
+
+PROC_NAME = "thunderbird.exe"
 
 def monitor_task():
 
@@ -20,6 +22,17 @@ def monitor_task():
         sec = count % 60
         timer_str = "%02d:%02d"%(min, sec)
         label_top["text"] = timer_str
+
+        #プロセス監視
+        for proc in psutil.process_iter():
+            try:
+                proc_str = proc.exe()
+                proc_list = proc_str.split("\\")
+                if proc_list[-1] == PROC_NAME:
+                    print("----------------------------")
+            except Exception as e:
+                print(f"proc err: {str(e)}")
+
 
         time.sleep(1)  # 1s
 
