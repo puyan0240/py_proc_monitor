@@ -47,14 +47,14 @@ if __name__ == '__main__':
 
     #---------- Frame(TOP) ----------
     #Label
-    label_top = tkinter.Label(frame_top, text="hoge")
+    label_top = tkinter.Label(frame_top, text="hoge", font=("system", "40", "bold"))
     label_top.grid(row=0, column=0, pady=10)
 
     #---------- Frame(BOTTOM) ----------
     #Button
-    btn = tkinter.Button(frame_bottom, text="何もしません", command=click_btn)
+    btn = tkinter.Button(frame_bottom, text="何もしません", font=("system", "10", "normal"),command=click_btn)
     btn.config(state=tkinter.DISABLED)
-    btn.grid(row=0, column=0, padx=100, pady=20)
+    btn.grid(row=0, column=0, padx=100, pady=20, ipadx=5, ipady=5)
 
 
     #タスク起動
