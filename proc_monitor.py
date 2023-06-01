@@ -24,6 +24,9 @@ def monitor_task():
         time.sleep(1)  # 1s
 
 
+def click_btn():
+    print("on")
+
 
 if __name__ == '__main__':
 
@@ -34,27 +37,24 @@ if __name__ == '__main__':
 
     #---------- Frame作成 ----------
     frame_top    = tkinter.Frame(root)
-    frame_center = tkinter.Frame(root)
     frame_bottom = tkinter.Frame(root)
     separator    = ttk.Separator(root, orient="horizontal", style="blue.TSeparator")
 
     #---------- Frame配置 ----------
     frame_top.grid(row=0, column=0)
     separator.grid(row=1, column=0, sticky="ew", pady=5)
-    frame_center.grid(row=2, column=0)
-    frame_bottom.grid(row=3, column=0)    
+    frame_bottom.grid(row=2, column=0)    
 
     #---------- Frame(TOP) ----------
     #Label
     label_top = tkinter.Label(frame_top, text="hoge")
     label_top.grid(row=0, column=0, pady=10)
 
-    #dbg
-    hour = 23
-    min = 1
-    sec = 3
-    str = "%02d:%02d %02d"%(hour,min,sec)
-    label_top['text'] = str
+    #---------- Frame(BOTTOM) ----------
+    #Button
+    btn = tkinter.Button(frame_bottom, text="何もしません", command=click_btn)
+    btn.config(state=tkinter.DISABLED)
+    btn.grid(row=0, column=0, padx=100, pady=20)
 
 
     #タスク起動
