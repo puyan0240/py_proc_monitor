@@ -31,6 +31,8 @@ def monitor_task():
                 if proc_list[-1] == PROC_NAME:
                     print("----------------------------")
                     break
+            except psutil.AccessDenied: #アクセス権なし
+                pass
             except Exception as e:
                 print(f"proc err: {str(e)}")
 
