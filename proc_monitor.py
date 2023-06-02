@@ -6,9 +6,27 @@ import psutil  #プロセス取得
 
 max_count = (60 * 60)
 count = 0
+play_str = ""
 
 PROC_NAME = "thunderbird.exe"
 
+############################################################
+#音声再生タスク
+############################################################
+def play_task():
+    global play_str
+
+    while True:
+
+        if play_str != "":
+            pass
+
+        time.sleep(1)
+
+
+############################################################
+#プロセス監視タスク
+############################################################
 def monitor_task():
     global count
 
@@ -36,8 +54,7 @@ def monitor_task():
             timer_str = "%02d:%02d"%(min, sec)
             label_top["text"] = timer_str
             count -= 1
-
-
+       
         time.sleep(1)  # 1s
 
 
@@ -80,10 +97,16 @@ if __name__ == '__main__':
     btn.grid(row=0, column=0, padx=100, pady=20, ipadx=5, ipady=5)
 
 
-    #タスク起動
-    task_id = threading.Thread(target=monitor_task)
-    task_id.daemon = True  #デーモン
-    task_id.start()
+    #---------- タスク起動 ----------
+    #プロセス監視タスク
+    monitor_task_id = threading.Thread(target=monitor_task)
+    monitor_task_id.daemon = True  #デーモン
+    monitor_task_id.start()
+
+    #音声再生タスク
+    play_task_id = threading.Thread(target=play_task)
+    play_task_id.daemon = True  #デーモン
+    play_task_id.start()
 
     root.mainloop()
 
