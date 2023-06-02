@@ -1,12 +1,18 @@
 import tkinter
 from tkinter import ttk, messagebox
 import time
+import os
 import threading  #スレッド
+from gtts import gTTS  #文字->音声ファイル化
+from playsound import playsound  #音声ファイルを再生
 import psutil  #プロセス取得
 
 max_count = (60 * 60)
 count = 0
 play_str = ""
+
+#一時ファイル
+TMP_PLAY_FILENAME = "tmp_play.mp3"
 
 PROC_NAME = "thunderbird.exe"
 
@@ -19,7 +25,26 @@ def play_task():
     while True:
 
         if play_str != "":
-            pass
+            print("-------------------------")
+            #音声ファイル化
+            try:
+                out = gTTS(play_str, lang='ja', slow=False)
+                out.save(TMP_PLAY_FILENAME)
+            except Exception as e:
+                print(f"mp3 file err: {str(e)}")
+
+            #音声ファイルを再生
+            try:
+                playsound(TMP_PLAY_FILENAME)
+            except Exception as e:
+                print(f"play err: {str(e)}")
+
+
+            play_str = ""
+
+            #音声ファイルを削除
+            if os.path.exists(TMP_PLAY_FILENAME) == True:
+                os.remove(TMP_PLAY_FILENAME)
 
         time.sleep(1)
 
@@ -28,7 +53,7 @@ def play_task():
 #プロセス監視タスク
 ############################################################
 def monitor_task():
-    global count
+    global count,play_str
 
     while True:
 
@@ -41,6 +66,9 @@ def monitor_task():
                     if count == 0:
                         #ボタン押下許可
                         btn.config(state=tkinter.NORMAL)
+                    if play_str == "":
+                        print("++++")
+                        play_str = "本日は晴天なり"
                     break
             except psutil.AccessDenied: #アクセス権なし
                 pass
