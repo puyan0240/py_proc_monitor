@@ -30,6 +30,7 @@ def monitor_task():
                 proc_list = proc_str.split("\\")
                 if proc_list[-1] == PROC_NAME:
                     print("----------------------------")
+                    break
             except Exception as e:
                 print(f"proc err: {str(e)}")
 
