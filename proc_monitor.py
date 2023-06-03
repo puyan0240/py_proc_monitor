@@ -60,7 +60,7 @@ def play_voice(play_str):
 #プロセス監視タスク
 ############################################################
 def monitor_task():
-    global count,play_str
+    global count
 
     while True:
 
@@ -96,6 +96,9 @@ def monitor_task():
         time.sleep(1)  # 1s
 
 
+############################################################
+#ボタンを押された時のイベント
+############################################################
 def click_btn():
     global count
 
@@ -110,7 +113,6 @@ def click_btn():
 #フレームの終了「×」を押された時のイベント
 ############################################################
 def click_close():
-    global play_str
 
     val = tkinter.StringVar()
     val.set(tkinter.simpledialog.askstring('パスワード', 'パスワードを入力してください'))
