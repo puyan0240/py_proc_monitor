@@ -11,7 +11,7 @@ import psutil  #プロセス取得
 #max_count = (10 * 60) #10分
 max_count = (20)
 
-count = 0
+display_count = count = 0
 last_play_str = ""
 
 #一時ファイル
@@ -62,7 +62,7 @@ def play_voice(play_str):
 #プロセス監視タスク
 ############################################################
 def monitor_task():
-    global count
+    global display_count,count
 
     while True:
 
@@ -87,13 +87,17 @@ def monitor_task():
             except Exception as e:
                 print(f"proc err: {str(e)}")
 
-        #残り時間を表示&タイマ減算
-        if count != 0:
+        #タイマ減算
+        if count > 0:
+            count -= 1
+
+        #残り時間を表示 ※前回から変化があった場合のみ
+        if display_count != count:
             min = count / 60
             sec = count % 60
             timer_str = "%02d:%02d"%(min, sec)
             label_top["text"] = timer_str
-            count -= 1
+            display_count = count
 
         time.sleep(1)  # 1s
 
