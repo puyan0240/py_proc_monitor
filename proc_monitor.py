@@ -26,19 +26,23 @@ PROC_NAME = "thunderbird.exe"
 def play_voice(play_str):
     global last_play_str
 
+    #空文字は処理しない
     if play_str == "":
         return
 
+    #再生中に他のアナウンスを流す場合の対処
     if pygame.mixer.music.get_busy() == True:
         if last_play_str == play_str:
-            return
+            return  #同じアナウンスのため
         else:
             #音声再生を停止
             pygame.mixer.music.stop()
 
+    #再生中のアナウンスを保持
     last_play_str = play_str
 
 
+    #アナウンスを文字化⇒音声再生する
     try:
         #先にunloadしないと、音声ファイルにアクセスができない
         pygame.mixer.music.unload()
