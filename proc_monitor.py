@@ -30,6 +30,10 @@ def play_voice(play_str):
     if pygame.mixer.music.get_busy() == True:
         if last_play_str == play_str:
             return
+        else:
+            #音声再生を停止
+            pygame.mixer.music.stop()
+
     last_play_str = play_str
 
 
@@ -71,7 +75,9 @@ def monitor_task():
                         btn.config(state=tkinter.NORMAL)
 
                         #音声再生
-                        play_voice("政府の個人情報保護委員会は2日、対話型人工知能（AI）「チャットGPT」を開発した米新興企業オープンAIに対し行政指導したと発表した。")
+                        #警告メッセージが消えてしまうので、ここでは空きまで待つ
+                        if pygame.mixer.music.get_busy() == False:
+                            play_voice("政府の個人情報保護委員会は2日、対話型人工知能（AI）「チャットGPT」を開発した米新興企業オープンAIに対し行政指導したと発表した。")
 
                     break
             except psutil.AccessDenied: #アクセス権なし
@@ -119,7 +125,7 @@ def click_close():
             os.remove(TMP_PLAY_FILENAME)
 
     else:
-        #音声再生
+        #音声再生(警告メッセージ)
         play_voice("パスワードが間違っています")
 
         #ポップアップメッセージ
