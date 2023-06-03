@@ -8,7 +8,9 @@ from gtts import gTTS  #文字->音声ファイル化
 import pygame  #音声ファイルを再生
 import psutil  #プロセス取得
 
-max_count = (60 * 60)
+#max_count = (10 * 60) #10分
+max_count = (20)
+
 count = 0
 last_play_str = ""
 
@@ -101,6 +103,10 @@ def monitor_task():
 ############################################################
 def click_btn():
     global count
+
+    #音声アナウンスを停止
+    if pygame.mixer.music.get_busy() == True:  #再生中?
+        pygame.mixer.music.stop()  #再生を停止
 
     #タイマーセット
     count = max_count
