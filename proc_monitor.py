@@ -101,6 +101,8 @@ def click_btn():
 #フレームの終了「×」を押された時のイベント
 ############################################################
 def click_close():
+    global play_str
+
     val = tkinter.StringVar()
     val.set(tkinter.simpledialog.askstring('パスワード', 'パスワードを入力してください'))
     if val.get() == "":
@@ -112,6 +114,8 @@ def click_close():
             os.remove(TMP_PLAY_FILENAME)
     else:
         messagebox.showerror("エラー","パスワードが間違っています")
+
+        play_str = "パスワードが間違っています"
 
 
 if __name__ == '__main__':
