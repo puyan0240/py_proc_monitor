@@ -5,9 +5,8 @@ import time
 import os
 import threading  #スレッド
 from gtts import gTTS  #文字->音声ファイル化
-from playsound import playsound  #音声ファイルを再生
+import pygame  #音声ファイルを再生
 import psutil  #プロセス取得
-import pygame
 
 max_count = (60 * 60)
 count = 0
@@ -41,7 +40,6 @@ def play_voice(play_str):
         if os.path.exists(TMP_PLAY_FILENAME) == True:
             os.remove(TMP_PLAY_FILENAME)
 
-        print("-------------------------")
         #音声ファイル化
         out = gTTS(play_str, lang='ja', slow=False)
         out.save(TMP_PLAY_FILENAME)
