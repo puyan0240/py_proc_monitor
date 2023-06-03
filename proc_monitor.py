@@ -7,47 +7,51 @@ import threading  #スレッド
 from gtts import gTTS  #文字->音声ファイル化
 from playsound import playsound  #音声ファイルを再生
 import psutil  #プロセス取得
+import pygame
 
 max_count = (60 * 60)
 count = 0
-play_str = ""
+last_play_str = ""
 
 #一時ファイル
 TMP_PLAY_FILENAME = "tmp_play.mp3"
 
 PROC_NAME = "thunderbird.exe"
 
+
 ############################################################
-#音声再生タスク
+#音声再生関数 (pygameで再生する)
 ############################################################
-def play_task():
-    global play_str
+def play_voice(play_str):
+    global last_play_str
 
-    while True:
+    if play_str == "":
+        return
 
-        if play_str != "":
-            print("-------------------------")
-            #音声ファイル化
-            try:
-                out = gTTS(play_str, lang='ja', slow=False)
-                out.save(TMP_PLAY_FILENAME)
-            except Exception as e:
-                print(f"mp3 file err: {str(e)}")
-
-            #音声ファイルを再生
-            try:
-                playsound(TMP_PLAY_FILENAME)
-            except Exception as e:
-                print(f"play err: {str(e)}")
+    if pygame.mixer.music.get_busy() == True:
+        if last_play_str == play_str:
+            return
+    last_play_str = play_str
 
 
-            play_str = ""
+    try:
+        #先にunloadしないと、音声ファイルにアクセスができない
+        pygame.mixer.music.unload()
+        #音声ファイルを削除
+        if os.path.exists(TMP_PLAY_FILENAME) == True:
+            os.remove(TMP_PLAY_FILENAME)
 
-            #音声ファイルを削除
-            if os.path.exists(TMP_PLAY_FILENAME) == True:
-                os.remove(TMP_PLAY_FILENAME)
+        print("-------------------------")
+        #音声ファイル化
+        out = gTTS(play_str, lang='ja', slow=False)
+        out.save(TMP_PLAY_FILENAME)
 
-        time.sleep(1)
+        #音声ファイルを再生
+        pygame.mixer.music.load(TMP_PLAY_FILENAME)
+        pygame.mixer.music.play(0) #1回再生
+
+    except Exception as e:
+        print(f"play err: {str(e)}")
 
 
 ############################################################
@@ -67,9 +71,10 @@ def monitor_task():
                     if count == 0:
                         #ボタン押下許可
                         btn.config(state=tkinter.NORMAL)
-                    
-                        if play_str == "":
-                            play_str = "政府の個人情報保護委員会は2日、対話型人工知能（AI）「チャットGPT」を開発した米新興企業オープンAIに対し行政指導したと発表した。"
+
+                        #音声再生
+                        play_voice("政府の個人情報保護委員会は2日、対話型人工知能（AI）「チャットGPT」を開発した米新興企業オープンAIに対し行政指導したと発表した。")
+
                     break
             except psutil.AccessDenied: #アクセス権なし
                 pass
@@ -109,13 +114,18 @@ def click_close():
         # tkinter終了
         root.destroy()
 
+        #先にunloadしないと、音声ファイルにアクセスができない
+        pygame.mixer.music.unload()
         #音声ファイルを削除
         if os.path.exists(TMP_PLAY_FILENAME) == True:
             os.remove(TMP_PLAY_FILENAME)
-    else:
-        messagebox.showerror("エラー","パスワードが間違っています")
 
-        play_str = "パスワードが間違っています"
+    else:
+        #音声再生
+        play_voice("パスワードが間違っています")
+
+        #ポップアップメッセージ
+        messagebox.showerror("エラー","パスワードが間違っています")
 
 
 if __name__ == '__main__':
@@ -153,11 +163,9 @@ if __name__ == '__main__':
     monitor_task_id.daemon = True  #デーモン
     monitor_task_id.start()
 
-    #音声再生タスク
-    play_task_id = threading.Thread(target=play_task)
-    play_task_id.daemon = True  #デーモン
-    play_task_id.start()
 
+    #pygameを初期化
+    pygame.init()
 
     #終了ボタン押下イベント登録
     root.protocol("WM_DELETE_WINDOW", click_close)
