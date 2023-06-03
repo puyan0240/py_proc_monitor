@@ -1,4 +1,5 @@
 import tkinter
+import tkinter.simpledialog
 from tkinter import ttk, messagebox
 import time
 import os
@@ -66,9 +67,9 @@ def monitor_task():
                     if count == 0:
                         #ボタン押下許可
                         btn.config(state=tkinter.NORMAL)
-                    if play_str == "":
-                        print("++++")
-                        play_str = "本日は晴天なり"
+                    
+                        if play_str == "":
+                            play_str = "政府の個人情報保護委員会は2日、対話型人工知能（AI）「チャットGPT」を開発した米新興企業オープンAIに対し行政指導したと発表した。"
                     break
             except psutil.AccessDenied: #アクセス権なし
                 pass
@@ -82,7 +83,7 @@ def monitor_task():
             timer_str = "%02d:%02d"%(min, sec)
             label_top["text"] = timer_str
             count -= 1
-       
+
         time.sleep(1)  # 1s
 
 
@@ -94,6 +95,23 @@ def click_btn():
 
     #ボタン押下禁止
     btn.config(state=tkinter.DISABLED)
+
+
+############################################################
+#フレームの終了「×」を押された時のイベント
+############################################################
+def click_close():
+    val = tkinter.StringVar()
+    val.set(tkinter.simpledialog.askstring('パスワード', 'パスワードを入力してください'))
+    if val.get() == "":
+        # tkinter終了
+        root.destroy()
+
+        #音声ファイルを削除
+        if os.path.exists(TMP_PLAY_FILENAME) == True:
+            os.remove(TMP_PLAY_FILENAME)
+    else:
+        messagebox.showerror("エラー","パスワードが間違っています")
 
 
 if __name__ == '__main__':
@@ -135,6 +153,10 @@ if __name__ == '__main__':
     play_task_id = threading.Thread(target=play_task)
     play_task_id.daemon = True  #デーモン
     play_task_id.start()
+
+
+    #終了ボタン押下イベント登録
+    root.protocol("WM_DELETE_WINDOW", click_close)
 
     root.mainloop()
 
