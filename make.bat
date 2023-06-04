@@ -1,0 +1,1 @@
+call pyinstaller.exe .\proc_monitor.py --onefile --noconsole
