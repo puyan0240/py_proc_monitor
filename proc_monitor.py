@@ -99,13 +99,8 @@ def monitor_task():
                                 #文字リストの内容をアナウンスする
                                 data_str = data_list[data_pos]
                                 play_voice(data_str)
+                    break #プロセス
 
-                                #次回の位置を確定
-                                data_pos += 1
-                                if data_pos >= len(data_list):
-                                    data_pos = 0
-
-                    break
             except psutil.AccessDenied: #アクセス権なし
                 pass
             except Exception as e:
@@ -130,11 +125,17 @@ def monitor_task():
 #ボタンを押された時のイベント
 ############################################################
 def click_btn():
-    global count
+    global count,data_pos
 
     #音声アナウンスを停止
     if pygame.mixer.music.get_busy() == True:  #再生中?
         pygame.mixer.music.stop()  #再生を停止
+
+    #次回アナウンスする文字リストの位置を確定
+    if len(data_list) != 0:
+        data_pos += 1
+        if data_pos >= len(data_list):
+            data_pos = 0
 
     #タイマーセット
     count = max_count
