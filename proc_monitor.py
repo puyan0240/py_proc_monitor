@@ -140,6 +140,10 @@ def monitor_task():
 def click_btn():
     global count,data_pos
 
+    #残タイマー=0なら無効
+    if count == 0:
+        return
+
     #タイマーセット
     count = max_count
 
