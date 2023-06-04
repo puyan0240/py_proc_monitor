@@ -79,6 +79,7 @@ def monitor_task():
     global display_count,count,data_pos
 
     while True:
+        hit = False
 
         #プロセス監視
         for proc in psutil.process_iter():  #起動中のプロセス一覧を取得
@@ -87,6 +88,8 @@ def monitor_task():
                 proc_list = proc_str.split("\\")
 
                 if proc_list[-1] == PROC_NAME:  #監視対象のプロセスです
+                    hit = True  #見つかりました
+
                     if count == 0:  #タイムアウトしました
                         #ボタン押下許可
                         btn.config(state=tkinter.NORMAL)
@@ -107,9 +110,18 @@ def monitor_task():
             except Exception as e:
                 print(f"proc err: {str(e)}")
 
-        #タイマ減算
+        #監視中
         if count > 0:
-            count -= 1
+            count -= 1  #タイマ減算
+
+            #監視中にアプリを閉じた場合
+            if hit == False:  #今回プロセスが見つからなかった
+                count = 0  #タイマクリア
+                data_pos = 0  #文字リストの位置クリア
+
+                #ボタン押下禁止
+                btn.config(state=tkinter.DISABLED)
+
 
         #残り時間を表示 ※前回から変化があった場合のみ
         if display_count != count:
