@@ -8,8 +8,8 @@ from gtts import gTTS  #文字->音声ファイル化
 import pygame  #音声ファイルを再生
 import psutil  #プロセス取得
 
-#max_count = (10 * 60) #10分
-max_count = (20)
+#待ち時間
+max_count = (10 * 60) #10分
 
 display_count = count = 0
 last_play_str = ""
