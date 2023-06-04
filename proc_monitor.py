@@ -26,7 +26,7 @@ data_list = []
 data_pos = 0
 
 #監視するプロセス
-PROC_NAME = "thunderbird.exe"
+PROC_NAME = "steam.exe"
 
 
 ############################################################
