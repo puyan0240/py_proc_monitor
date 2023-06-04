@@ -26,7 +26,8 @@ data_list = []
 data_pos = 0
 
 #監視するプロセス
-PROC_NAME = "steam.exe"
+#PROC_NAME = "steam.exe"
+PROC_NAME = "thunderbird.exe"
 
 
 ############################################################
@@ -127,6 +128,12 @@ def monitor_task():
 def click_btn():
     global count,data_pos
 
+    #タイマーセット
+    count = max_count
+
+    #ボタン押下禁止
+    btn.config(state=tkinter.DISABLED)
+
     #音声アナウンスを停止
     if pygame.mixer.music.get_busy() == True:  #再生中?
         pygame.mixer.music.stop()  #再生を停止
@@ -136,12 +143,6 @@ def click_btn():
         data_pos += 1
         if data_pos >= len(data_list):
             data_pos = 0
-
-    #タイマーセット
-    count = max_count
-
-    #ボタン押下禁止
-    btn.config(state=tkinter.DISABLED)
 
 
 ############################################################
@@ -182,7 +183,8 @@ if __name__ == '__main__':
     root.resizable(False, False)  #リサイズ不可
 
     #---------- アイコン ----------
-    root.iconphoto(False, tkinter.PhotoImage(file=ICON_FILENAME))
+    #EXEから実行できないので、一旦NOPする
+    #root.iconphoto(False, tkinter.PhotoImage(file=ICON_FILENAME))
 
     #---------- Frame作成 ----------
     frame_top    = tkinter.Frame(root)
