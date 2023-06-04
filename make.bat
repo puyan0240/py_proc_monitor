@@ -1,1 +1,1 @@
-call pyinstaller.exe .\proc_monitor.py --onefile --noconsole
+call pyinstaller.exe .\proc_monitor.py --onefile --noconsole --icon=icon/icon.ico

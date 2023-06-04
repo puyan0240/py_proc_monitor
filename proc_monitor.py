@@ -14,6 +14,9 @@ max_count = (20)
 display_count = count = 0
 last_play_str = ""
 
+#アイコン
+ICON_FILENAME = "icon/icon.png"
+
 #一時ファイル
 TMP_PLAY_FILENAME = "tmp_play.mp3"
 
@@ -176,6 +179,9 @@ if __name__ == '__main__':
     root = tkinter.Tk()
     root.title("監視くん")
     root.resizable(False, False)  #リサイズ不可
+
+    #---------- アイコン ----------
+    root.iconphoto(False, tkinter.PhotoImage(file=ICON_FILENAME))
 
     #---------- Frame作成 ----------
     frame_top    = tkinter.Frame(root)
