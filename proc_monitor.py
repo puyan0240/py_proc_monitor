@@ -17,6 +17,12 @@ last_play_str = ""
 #一時ファイル
 TMP_PLAY_FILENAME = "tmp_play.mp3"
 
+#文字リスト
+DATA_FILENAME = "data.txt"
+data_list = []
+data_pos = 0
+
+#監視するプロセス
 PROC_NAME = "thunderbird.exe"
 
 
@@ -66,24 +72,35 @@ def play_voice(play_str):
 #プロセス監視タスク
 ############################################################
 def monitor_task():
-    global display_count,count
+    global display_count,count,data_pos
 
     while True:
 
         #プロセス監視
-        for proc in psutil.process_iter():
+        for proc in psutil.process_iter():  #起動中のプロセス一覧を取得
             try:
-                proc_str = proc.exe()
+                proc_str = proc.exe()  #プロセス名を取得
                 proc_list = proc_str.split("\\")
-                if proc_list[-1] == PROC_NAME:
-                    if count == 0:
+
+                if proc_list[-1] == PROC_NAME:  #監視対象のプロセスです
+                    if count == 0:  #タイムアウトしました
                         #ボタン押下許可
                         btn.config(state=tkinter.NORMAL)
 
                         #音声再生
                         #警告メッセージが消えてしまうので、ここでは空きまで待つ
                         if pygame.mixer.music.get_busy() == False:
-                            play_voice("政府の個人情報保護委員会は2日、対話型人工知能（AI）「チャットGPT」を開発した米新興企業オープンAIに対し行政指導したと発表した。")
+                            if len(data_list) == 0:
+                                play_voice("こんにちは")
+                            else:
+                                #文字リストの内容をアナウンスする
+                                data_str = data_list[data_pos]
+                                play_voice(data_str)
+
+                                #次回の位置を確定
+                                data_pos += 1
+                                if data_pos >= len(data_list):
+                                    data_pos = 0
 
                     break
             except psutil.AccessDenied: #アクセス権なし
@@ -131,14 +148,19 @@ def click_close():
     val = tkinter.StringVar()
     val.set(tkinter.simpledialog.askstring('パスワード', 'パスワードを入力してください'))
     if val.get() == "":
-        # tkinter終了
-        root.destroy()
+
+        #アナウンス中は停止する
+        if pygame.mixer.music.get_busy() == True:
+            pygame.mixer.music.stop()
 
         #先にunloadしないと、音声ファイルにアクセスができない
         pygame.mixer.music.unload()
         #音声ファイルを削除
         if os.path.exists(TMP_PLAY_FILENAME) == True:
             os.remove(TMP_PLAY_FILENAME)
+
+        # tkinter終了
+        root.destroy()
 
     else:
         #音声再生(警告メッセージ)
@@ -183,6 +205,16 @@ if __name__ == '__main__':
     monitor_task_id.daemon = True  #デーモン
     monitor_task_id.start()
 
+    #アナウンス文字を外部ファイルから読み込む
+    if os.path.exists(DATA_FILENAME) == False:
+        with open(DATA_FILENAME, 'w', encoding='utf-8') as f:
+            pass #ファイルが無ければ空ファイル作成
+
+    with open(DATA_FILENAME, 'r', encoding='utf-8') as f:
+        lines = f.read()
+        for line in lines.split('\n'):
+            if len(line) != 0:
+                data_list.append(line) #行単位で文字リストへ格納
 
     #pygameを初期化
     pygame.init()
